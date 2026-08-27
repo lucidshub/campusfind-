@@ -56,6 +56,35 @@
   text-decoration: none;
 }
 
+.nav-user {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.nav-user small {
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.nav-logout-btn {
+  background: transparent;
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  padding: 6px 12px;
+  border-radius: var(--radius);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease, border-color 0.2s ease;
+}
+
+.nav-logout-btn:hover {
+  background: var(--color-danger);
+  border-color: var(--color-danger);
+  color: #ffffff;
+}
+
 /* Main */
 .main-content {
   flex: 1;
@@ -324,12 +353,22 @@
   border-color: var(--color-danger);
   background: var(--color-lost);
   color: var(--color-lost-text);
+  box-shadow: 0 0 10px var(--color-danger);
 }
 
 .type-btn.active.found {
   border-color: var(--color-success);
   background: var(--color-found);
   color: var(--color-found-text);
+  box-shadow: 0 0 10px var(--color-success);
+}
+
+:root.dark .type-btn.active.lost {
+  box-shadow: 0 0 12px var(--color-danger);
+}
+
+:root.dark .type-btn.active.found {
+  box-shadow: 0 0 12px var(--color-success);
 }
 
 .form-error {
@@ -360,6 +399,69 @@
 .submit-btn:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+}
+
+.claim-btn {
+  width: 100%;
+  margin-top: 20px;
+  padding: 12px;
+  background: var(--color-success);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 0 10px var(--color-success);
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+
+.claim-btn:hover {
+  background: var(--color-success);
+  filter: brightness(1.1);
+}
+
+.claim-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ========== AUTH ========== */
+.auth-page {
+  display: flex;
+  justify-content: center;
+  padding: 24px 0;
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 28px;
+  width: 100%;
+  max-width: 420px;
+}
+
+.auth-card h1 {
+  font-size: 1.6rem;
+  margin-bottom: 4px;
+}
+
+.auth-switch {
+  text-align: center;
+  margin-top: 16px;
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+.auth-switch a {
+  font-weight: 600;
+}
+
+.auth-hint {
+  margin-top: 6px;
+  font-size: 0.8rem;
+  color: var(--color-text-light);
 }
 
 /* ========== ITEM DETAILS ========== */
@@ -703,7 +805,7 @@
   margin-right: 12px;
 }
 
-:root.dark .type-btn {
+:root.dark .type-btn:not(.active) {
   color: #ffffff;
   background: #1e293b;
   border-color: #475569;

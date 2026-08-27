@@ -1,12 +1,16 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link } from 'react-router-dom'
-import { fetchItemById } from '../services/api'
+import { fetchItemById, claimItem } from '../services/api'
+import { useAuth } from '../context/AuthContext'
 
 function ItemDetails() {
   const { id } = useParams()
+  const { user, isAuthenticated } = useAuth()
   const [item, setItem] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const [claiming, setClaiming] = useState(false)
+  const [claimError, setClaimError] = useState(null)
 
   useEffect(() => {
     fetchItemById(id)
@@ -15,11 +19,49 @@ function ItemDetails() {
       .finally(() => setLoading(false))
   }, [id])
 
+  const isLost = item ? item.type === 'lost' : false
+
+  const canClaim =
+    isAuthenticated &&
+    !!item &&
+    (item.reporterId === user._id || user.role === 'faculty')
+
+  const handleClaim = async () => {
+    if (!window.confirm('Confirm that the owner has received this item? It will be removed from the listings.')) {
+      return
+    }
+    setClaiming(true)
+    setClaimError(null)
+    try {
+      const updated = await claimItem(id)
+      setItem(updated)
+    } catch {
+      setClaimError('Could not claim the item. Please try again.')
+    } finally {
+      setClaiming(false)
+    }
+  }
+
   if (loading) return <p className="loading-text">Loading item...</p>
   if (error) return <p className="error-text">{error}</p>
   if (!item) return null
 
-  const isLost = item.type === 'lost'
+  if (item.claimed) {
+    return (
+      <div className="item-details">
+        <Link to="/browse" className="back-link">← Back to Browse</Link>
+        <div className="detail-card">
+          <div className="detail-info">
+            <span className="type-badge type-found">Claimed</span>
+            <h1>{item.itemName}</h1>
+            <p className="detail-description">
+              This item has been claimed by its owner and has been removed from the listings.
+            </p>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="item-details">
@@ -47,6 +89,23 @@ function ItemDetails() {
               <strong>Contact:</strong> {item.contact}
             </div>
           </div>
+
+          {claimError && <div className="form-error">{claimError}</div>}
+
+          {canClaim ? (
+            <button
+              type="button"
+              className="claim-btn"
+              onClick={handleClaim}
+              disabled={claiming}
+            >
+              {claiming ? 'Claiming...' : '✓ Claim — Owner received it'}
+            </button>
+          ) : (
+            <p className="claim-note">
+              Reported by {item.reporterName || 'a member'}. Only the reporter or faculty can mark this as claimed.
+            </p>
+          )}
         </div>
       </div>
     </div>
