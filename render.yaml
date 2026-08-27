@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: campusfind-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    healthCheckPath: /api
+    envVars:
+      - key: MONGODB_URI
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: BLOB_READ_WRITE_TOKEN
+        sync: false
+    autoDeploy: true
